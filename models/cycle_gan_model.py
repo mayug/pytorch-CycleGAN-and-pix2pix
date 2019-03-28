@@ -111,6 +111,7 @@ class CycleGANModel(BaseModel):
         self.real_B = input['B' if AtoB else 'A'].to(self.device)
         self.noise_A = torch.Tensor(np.random.normal(0, 1, self.real_A.shape)).cuda()
         self.noise_A_1 = torch.Tensor(np.random.normal(0, 1, self.real_A.shape)).cuda()
+        self.noise_B = torch.Tensor(np.random.normal(0, 1, self.real_A.shape)).cuda()
         self.image_paths = input['A_paths' if AtoB else 'B_paths']
 
     def forward(self):
@@ -166,7 +167,10 @@ class CycleGANModel(BaseModel):
         if lambda_idt > 0:
             # G_A should be identity if real_B is fed: ||G_A(B) - B||
             self.idt_A = self.netG_A(self.real_B)
-            self.loss_idt_A = self.criterionIdt(self.idt_A, self.real_B) * lambda_B * lambda_idt
+            self.input_idt = torch.cat([self.idt_A, self.noise_B], dim=1)
+#             self.loss_idt_A = self.criterionIdt(self.idt_A, self.real_B) * lambda_B * lambda_idt
+            self.loss_idt_A = self.criterionIdt(self.input_idt, self.real_B) * lambda_B * lambda_idt
+
             # G_B should be identity if real_A is fed: ||G_B(A) - A||
             self.idt_B = self.netG_B(self.real_A)
             self.loss_idt_B = self.criterionIdt(self.idt_B, self.real_A) * lambda_A * lambda_idt
