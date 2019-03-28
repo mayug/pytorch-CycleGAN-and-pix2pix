@@ -110,18 +110,21 @@ class CycleGANModel(BaseModel):
         self.real_A = input['A' if AtoB else 'B'].to(self.device)
         self.real_B = input['B' if AtoB else 'A'].to(self.device)
         self.noise_A = torch.Tensor(np.random.normal(0, 1, self.real_A.shape)).cuda()
+        self.noise_A_1 = torch.Tensor(np.random.normal(0, 1, self.real_A.shape)).cuda()
         self.image_paths = input['A_paths' if AtoB else 'B_paths']
 
     def forward(self):
         """Run forward pass; called by both functions <optimize_parameters> and <test>."""
         self.input = torch.cat([self.real_A, self.noise_A], dim=1)
+        
         print('input shape ', self.input.shape)
         self.fake_B = self.netG_A(self.input)
 #         self.fake_B = self.netG_A(self.real_A)  # G_A(A)
         self.rec_A = self.netG_B(self.fake_B)   # G_B(G_A(A))
         self.fake_A = self.netG_B(self.real_B)  # G_B(B)
-        self.rec_B = self.netG_A(self.fake_A)   # G_A(G_B(B))
-
+        self.input_1 = torch.cat([self.fake_A, self.noise_A_1], dim=1)
+#         self.rec_B = self.netG_A(self.fake_A)   # G_A(G_B(B))
+        self.rec_B = self.netG_A(self.input_1)   # G_A(G_B(B))
     def backward_D_basic(self, netD, real, fake):
         """Calculate GAN loss for the discriminator
 
