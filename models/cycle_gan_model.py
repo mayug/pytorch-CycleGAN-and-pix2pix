@@ -109,7 +109,7 @@ class CycleGANModel(BaseModel):
         AtoB = self.opt.direction == 'AtoB'
         self.real_A = input['A' if AtoB else 'B'].to(self.device)
         self.real_B = input['B' if AtoB else 'A'].to(self.device)
-        self.A_noise = torch.Tensor(np.random.Normal(0, 1, self.real_A.shape))
+        self.A_noise = torch.Tensor(np.random.normal(0, 1, self.real_A.shape))
         self.image_paths = input['A_paths' if AtoB else 'B_paths']
 
     def forward(self):
