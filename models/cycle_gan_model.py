@@ -114,7 +114,7 @@ class CycleGANModel(BaseModel):
 
     def forward(self):
         """Run forward pass; called by both functions <optimize_parameters> and <test>."""
-        self.input = torch.cat([self.real_A, self.noise_A], dim=0)
+        self.input = torch.cat([self.real_A, self.noise_A], dim=1)
         self.fake_B = self.netG_A(self.input)
 #         self.fake_B = self.netG_A(self.real_A)  # G_A(A)
         self.rec_A = self.netG_B(self.fake_B)   # G_B(G_A(A))
