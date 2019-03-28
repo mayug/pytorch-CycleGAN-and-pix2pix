@@ -109,9 +109,9 @@ def get_transform(opt, params=None, grayscale=False, method=Image.BICUBIC, conve
 #                            transforms.Normalize((0.5, 0.5, 0.5),
 #                                                 (0.5, 0.5, 0.5))]
         
-        transform_list += [transforms.ToTensor(),
-                           transforms.Normalize((0.5),
-                                                (0.5))]
+        transform_list += [transforms.Grayscale(num_output_channels=1), transforms.ToTensor(),
+                           transforms.Normalize([0.5],
+                                                [0.5])]
     return transforms.Compose(transform_list)
 
 
