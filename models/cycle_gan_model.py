@@ -166,10 +166,10 @@ class CycleGANModel(BaseModel):
         # Identity loss
         if lambda_idt > 0:
             # G_A should be identity if real_B is fed: ||G_A(B) - B||
-            self.idt_A = self.netG_A(self.real_B)
-            self.input_idt = torch.cat([self.idt_A, self.noise_B], dim=1)
-#             self.loss_idt_A = self.criterionIdt(self.idt_A, self.real_B) * lambda_B * lambda_idt
-            self.loss_idt_A = self.criterionIdt(self.input_idt, self.real_B) * lambda_B * lambda_idt
+            
+            self.input_idt = torch.cat([self.real_B, self.noise_B], dim=1)
+            self.idt_A = self.netG_A(self.input_idt)
+            self.loss_idt_A = self.criterionIdt(self.idt_A, self.real_B) * lambda_B * lambda_idt
 
             # G_B should be identity if real_A is fed: ||G_B(A) - A||
             self.idt_B = self.netG_B(self.real_A)
